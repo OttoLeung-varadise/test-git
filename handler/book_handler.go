@@ -43,7 +43,7 @@ func CreateBookHandler(c *gin.Context) {
 	}
 
 	// 返回创建成功的书籍信息
-	c.JSON(http.StatusOK, toBookResponse(*book))
+	c.JSON(http.StatusCreated, toBookResponse(*book))
 }
 
 // GetBookHandler 根据ID查询书籍接口
@@ -153,14 +153,15 @@ func UpdateBookHandler(c *gin.Context) {
 	// 调用 service 更新书籍
 	if err := service.UpdateBook(uint(id), updatedBook); err != nil {
 		if err == gorm.ErrRecordNotFound {
-			c.JSON(http.StatusNotFound, gin.H{"error": "书籍不存在"})
+			c.JSON(http.StatusNotFound, gin.H{"error": "書籍記錄不存在:" + err.Error()})
+			return
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "更新失败：" + err.Error()})
 		}
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "更新成功"})
+	c.JSON(http.StatusNoContent, gin.H{"message": "更新成功"})
 }
 
 // DeleteBookHandler 删除书籍接口
@@ -192,5 +193,5 @@ func DeleteBookHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "删除成功"})
+	c.JSON(http.StatusNoContent, gin.H{"message": "删除成功"})
 }
