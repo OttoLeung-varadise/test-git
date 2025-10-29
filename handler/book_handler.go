@@ -185,11 +185,7 @@ func DeleteBookHandler(c *gin.Context) {
 
 	// 调用 service 删除书籍
 	if err := service.DeleteBook(uint(id)); err != nil {
-		if err == gorm.ErrRecordNotFound {
-			c.JSON(http.StatusNotFound, gin.H{"error": "书籍不存在"})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "删除失败：" + err.Error()})
-		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "删除失败：" + err.Error()})
 		return
 	}
 
