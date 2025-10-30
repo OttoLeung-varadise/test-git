@@ -39,7 +39,3 @@ func main() {
 		fmt.Printf("服务启动失败: %v\n", err)
 	}
 }
-
-func Add(a, b int) int {
-	return a + b
-}

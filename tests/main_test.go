@@ -1,6 +1,8 @@
-package main
+package tests
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestAdd(t *testing.T) {
 	tests := []struct {
@@ -22,4 +24,8 @@ func TestAdd(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Add(a, b int) int {
+	return a + b
 }
