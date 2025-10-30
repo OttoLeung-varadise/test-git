@@ -1,0 +1,217 @@
+definitions:
+  handler.BookListResponse:
+    properties:
+      list:
+        description: 分页数据列表
+        items:
+          $ref: '#/definitions/handler.BookResponse'
+        type: array
+      total:
+        description: 总条数
+        type: integer
+    type: object
+  handler.BookResponse:
+    properties:
+      author:
+        description: 作者
+        type: string
+      created_at:
+        description: 创建时间
+        type: string
+      description:
+        description: 描述
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      price:
+        description: 价格
+        type: number
+      title:
+        description: 书名
+        type: string
+      updated_at:
+        description: 更新时间
+        type: string
+    type: object
+  handler.CreateBookRequest:
+    properties:
+      author:
+        description: 作者（必填）
+        type: string
+      description:
+        description: 描述
+        type: string
+      price:
+        description: 价格
+        type: number
+      title:
+        description: 书名（必填）
+        type: string
+    required:
+    - author
+    - title
+    type: object
+  handler.UpdateBookRequest:
+    properties:
+      author:
+        description: 作者（可选）
+        type: string
+      description:
+        description: 描述（可选）
+        type: string
+      price:
+        description: 价格（可选）
+        type: number
+      title:
+        description: 书名（可选，不填则不更新）
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /books:
+    get:
+      description: 分页查询所有书籍
+      parameters:
+      - description: 页码（默认1）
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数（默认10）
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.BookListResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 查询书籍列表
+    post:
+      consumes:
+      - application/json
+      description: 新增一本图书到数据库
+      parameters:
+      - description: 书籍信息
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.BookResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 创建新书籍
+  /books/{id}:
+    delete:
+      description: 根据ID软删除书籍
+      parameters:
+      - description: 书籍ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除成功
+          schema:
+            type: string
+        "400":
+          description: ID格式错误
+          schema:
+            type: string
+        "404":
+          description: 书籍不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 删除书籍
+    get:
+      description: 通过ID查询书籍详情
+      parameters:
+      - description: 书籍ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.BookResponse'
+        "400":
+          description: ID格式错误
+          schema:
+            type: string
+        "404":
+          description: 书籍不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 查询单本书籍
+    put:
+      consumes:
+      - application/json
+      description: 根据ID更新书籍信息
+      parameters:
+      - description: 书籍ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新的书籍信息
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            type: string
+        "400":
+          description: 请求参数错误或ID格式错误
+          schema:
+            type: string
+        "404":
+          description: 书籍不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 更新书籍信息
+swagger: "2.0"

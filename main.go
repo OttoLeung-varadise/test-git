@@ -5,7 +5,11 @@ import (
 	"test-git/db"
 	"test-git/handler"
 
+	_ "test-git/docs" // 导入生成的 docs 包
+
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -18,6 +22,9 @@ func main() {
 
 	// 2. 创建 Gin 引擎
 	r := gin.Default() // 默认包含日志和恢复中间件
+
+	// 注册 Swagger 路由（关键：让服务启动后能访问 Swagger 页面）
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 3. 注册书籍相关路由
 	bookGroup := r.Group("/books")

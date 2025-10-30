@@ -29,6 +29,11 @@ type BookResponse struct {
 	UpdatedAt   string  `json:"updated_at"`  // 更新时间
 }
 
+type BookListResponse struct {
+	Total int            `json:"total"` // 总条数
+	List  []BookResponse `json:"list"`  // 分页数据列表
+}
+
 // 把 model.Book 转换为 BookResponse（格式化时间）
 func toBookResponse(book model.Book) BookResponse {
 	return BookResponse{

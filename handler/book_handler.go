@@ -86,7 +86,7 @@ func GetBookHandler(c *gin.Context) {
 // @Produce json
 // @Param page query int false "页码（默认1）"
 // @Param pageSize query int false "每页条数（默认10）"
-// @Success 200 {object} gin.H{ "total": int, "list": []BookResponse }
+// @Success 200 {object} BookListResponse
 // @Failure 500 {string} string "服务器内部错误"
 // @Router /books [get]
 func ListBooksHandler(c *gin.Context) {
@@ -108,10 +108,11 @@ func ListBooksHandler(c *gin.Context) {
 	}
 
 	// 返回结果
-	c.JSON(http.StatusOK, gin.H{
-		"total": total, // 总条数
-		"list":  respList,
-	})
+	resp := BookListResponse{
+		Total: int(total),
+		List:  respList,
+	}
+	c.JSON(http.StatusOK, resp)
 }
 
 // UpdateBookHandler 更新书籍接口
