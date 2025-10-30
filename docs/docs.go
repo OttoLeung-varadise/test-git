@@ -232,9 +232,136 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/roles": {
+            "post": {
+                "description": "讀取一個角色excel，返回json",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "创建新角色",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "要上传的文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.COCRoleCard"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "handler.Attributes": {
+            "type": "object",
+            "properties": {
+                "体型(SIZ)": {
+                    "description": "体型",
+                    "type": "integer"
+                },
+                "体质(CON)": {
+                    "description": "体质",
+                    "type": "integer"
+                },
+                "力量(STR)": {
+                    "description": "力量",
+                    "type": "integer"
+                },
+                "外貌(APP)": {
+                    "description": "外貌",
+                    "type": "integer"
+                },
+                "幸运(LUK)": {
+                    "description": "幸运",
+                    "type": "integer"
+                },
+                "意志(POW)": {
+                    "description": "意志",
+                    "type": "integer"
+                },
+                "敏捷(DEX)": {
+                    "description": "敏捷",
+                    "type": "integer"
+                },
+                "教育(EDU)": {
+                    "description": "教育",
+                    "type": "integer"
+                },
+                "智力(INT)": {
+                    "description": "智力",
+                    "type": "integer"
+                },
+                "派生属性": {
+                    "description": "派生属性",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.DerivedAttributes"
+                        }
+                    ]
+                }
+            }
+        },
+        "handler.BasicInfo": {
+            "type": "object",
+            "properties": {
+                "外貌描述": {
+                    "description": "外貌描述",
+                    "type": "string"
+                },
+                "年龄": {
+                    "description": "年龄",
+                    "type": "integer"
+                },
+                "性别": {
+                    "description": "性别",
+                    "type": "string"
+                },
+                "种族": {
+                    "description": "种族",
+                    "type": "string"
+                },
+                "职业": {
+                    "description": "职业",
+                    "type": "string"
+                },
+                "背景故事": {
+                    "description": "背景故事",
+                    "type": "string"
+                },
+                "角色名": {
+                    "description": "角色名",
+                    "type": "string"
+                },
+                "阵营": {
+                    "description": "阵营",
+                    "type": "string"
+                }
+            }
+        },
         "handler.BookListResponse": {
             "type": "object",
             "properties": {
@@ -284,6 +411,59 @@ const docTemplate = `{
                 }
             }
         },
+        "handler.COCRoleCard": {
+            "type": "object",
+            "properties": {
+                "attributes": {
+                    "description": "属性值",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Attributes"
+                        }
+                    ]
+                },
+                "basic_info": {
+                    "description": "基本信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.BasicInfo"
+                        }
+                    ]
+                },
+                "inventory": {
+                    "description": "物品与财富",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Inventory"
+                        }
+                    ]
+                },
+                "personal_traits": {
+                    "description": "个人特征",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.PersonalTraits"
+                        }
+                    ]
+                },
+                "skills": {
+                    "description": "技能",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Skills"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "当前状态",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Status"
+                        }
+                    ]
+                }
+            }
+        },
         "handler.CreateBookRequest": {
             "type": "object",
             "required": [
@@ -309,6 +489,165 @@ const docTemplate = `{
                 }
             }
         },
+        "handler.DerivedAttributes": {
+            "type": "object",
+            "properties": {
+                "理智值(SAN)": {
+                    "description": "理智值",
+                    "type": "integer"
+                },
+                "生命值(HP)": {
+                    "description": "生命值",
+                    "type": "integer"
+                },
+                "移动力(MOV)": {
+                    "description": "移动力",
+                    "type": "integer"
+                },
+                "行动数": {
+                    "description": "行动数",
+                    "type": "integer"
+                },
+                "负重上限(kg)": {
+                    "description": "负重上限(kg)",
+                    "type": "integer"
+                },
+                "魔法值(MP)": {
+                    "description": "魔法值",
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.Equipment": {
+            "type": "object",
+            "properties": {
+                "名称": {
+                    "description": "装备名称",
+                    "type": "string"
+                },
+                "备注": {
+                    "description": "备注（可选）",
+                    "type": "string"
+                },
+                "弹药": {
+                    "description": "弹药（仅武器有，可选）",
+                    "type": "integer"
+                },
+                "数量": {
+                    "description": "数量",
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.Inventory": {
+            "type": "object",
+            "properties": {
+                "装备": {
+                    "description": "装备列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.Equipment"
+                    }
+                },
+                "财富": {
+                    "description": "财富信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Wealth"
+                        }
+                    ]
+                }
+            }
+        },
+        "handler.PersonalTraits": {
+            "type": "object",
+            "properties": {
+                "个性特点": {
+                    "description": "个性特点",
+                    "type": "string"
+                },
+                "特殊能力": {
+                    "description": "特殊能力",
+                    "type": "string"
+                },
+                "重要之人": {
+                    "description": "重要之人",
+                    "type": "string"
+                },
+                "重要物品": {
+                    "description": "重要物品",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.Skill": {
+            "type": "object",
+            "properties": {
+                "名称": {
+                    "description": "技能名称",
+                    "type": "string"
+                },
+                "备注": {
+                    "description": "备注（可选字段，omitempty表示为空时不序列化）",
+                    "type": "string"
+                },
+                "数值": {
+                    "description": "技能数值",
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.Skills": {
+            "type": "object",
+            "properties": {
+                "职业技能": {
+                    "description": "职业技能",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.Skill"
+                    }
+                },
+                "通用技能": {
+                    "description": "通用技能",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.Skill"
+                    }
+                },
+                "魔法技能": {
+                    "description": "魔法技能",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.Skill"
+                    }
+                }
+            }
+        },
+        "handler.Status": {
+            "type": "object",
+            "properties": {
+                "备注": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "当前理智值": {
+                    "description": "当前理智值",
+                    "type": "integer"
+                },
+                "当前生命值": {
+                    "description": "当前生命值",
+                    "type": "integer"
+                },
+                "是否受伤": {
+                    "description": "是否受伤",
+                    "type": "boolean"
+                },
+                "是否疯狂": {
+                    "description": "是否疯狂",
+                    "type": "boolean"
+                }
+            }
+        },
         "handler.UpdateBookRequest": {
             "type": "object",
             "properties": {
@@ -326,6 +665,23 @@ const docTemplate = `{
                 },
                 "title": {
                     "description": "书名（可选，不填则不更新）",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.Wealth": {
+            "type": "object",
+            "properties": {
+                "信用评级": {
+                    "description": "信用评级",
+                    "type": "integer"
+                },
+                "现金": {
+                    "description": "现金",
+                    "type": "integer"
+                },
+                "资产": {
+                    "description": "资产",
                     "type": "string"
                 }
             }

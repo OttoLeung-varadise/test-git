@@ -34,6 +34,11 @@ func main() {
 		bookGroup.DELETE("/:id", handler.DeleteBookHandler) // 删除书籍
 	}
 
+	roleGroup := r.Group("/roles")
+	{
+		roleGroup.POST("", handler.PreviewRoleHandler) // 預覽角色
+	}
+
 	fmt.Println("service started up, listen no port: 8080")
 	if err := r.Run(":8080"); err != nil {
 		fmt.Printf("service start fails: %v\n", err)
