@@ -1,0 +1,54 @@
+version: '3.8'
+
+# 定义数据卷（持久化 PostgreSQL 数据）
+volumes:
+  dev-postgres-data:  # 存储 PostgreSQL 数据的卷
+
+services:
+  # PostgreSQL 服务
+  postgres:
+    image: postgres:18-alpine  # 使用轻量的 Alpine 版本
+    container_name: dev-postgres  # 容器名称（方便识别）
+    ports:
+      - "5433:5432"  # 暴露 5432 端口到宿主机，外部工具可连接
+    environment:
+      # 数据库配置（需与 Go 应用的连接参数一致）
+      POSTGRES_USER: postgres  # 用户名
+      POSTGRES_PASSWORD: postgres  # 密码（开发环境简化，生产环境需复杂密码）
+      POSTGRES_DB: dev_db  # 初始化的数据库名
+      PGDATA: /var/lib/postgresql/data/pgdata # 数据存储路径（配合卷持久化）
+    volumes:
+      - dev-postgres-data:/var/lib/postgresql/data/pgdata  # 挂载数据卷，持久化数据
+    entrypoint: |
+      sh -c '
+        mkdir -p /var/lib/postgresql/data/pgdata
+        chown -R postgres:postgres /var/lib/postgresql/data
+        exec docker-entrypoint.sh postgres
+      '
+    restart: unless-stopped  # 容器退出后自动重启
+    healthcheck:
+      # 健康检查：确保 PostgreSQL 就绪后再启动 Go 应用
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dev_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Go 应用服务（你的 GORM + GIN 项目）
+  go-app:
+    build: .  # 从当前目录的 Dockerfile 构建镜像
+    container_name: dev-go-app
+    ports:
+      - "8080:8080"  # 暴露 8080 端口到宿主机，提供服务
+    environment:
+      # 数据库连接参数（需与 PostgreSQL 服务的环境变量一致）
+      DB_HOST: postgres  # 容器内通过服务名访问 PostgreSQL（同一网络）
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: dev_db
+      # GIN 运行模式（可选，开发环境用 debug）
+      GIN_MODE: debug
+    depends_on:
+      postgres:
+        condition: service_healthy  # 等待 PostgreSQL 健康检查通过后再启动
+    restart: unless-stopped
