@@ -21,3 +21,11 @@ migrate-clearup:
 # rebuild swagger json&files
 swag-init:
 	swag init -g main.go -o ./docs
+
+# run server on docker compose
+docker-up:
+	docker-compose up -d --build
+
+# stop server on docker compose
+docker-down:
+	docker-compose down

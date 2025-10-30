@@ -15,10 +15,10 @@ import (
 func main() {
 	// 初始化数据库连接 & migration
 	if err := db.Init(); err != nil {
-		fmt.Printf("数据库初始化失败: %v\n", err)
+		fmt.Printf("database init fails: %v\n", err)
 		return
 	}
-	fmt.Println("数据库连接成功")
+	fmt.Println("database connet succ")
 
 	r := gin.Default()
 
@@ -34,8 +34,8 @@ func main() {
 		bookGroup.DELETE("/:id", handler.DeleteBookHandler) // 删除书籍
 	}
 
-	fmt.Println("服务启动成功，监听端口: 8080")
+	fmt.Println("service started up, listen no port: 8080")
 	if err := r.Run(":8080"); err != nil {
-		fmt.Printf("服务启动失败: %v\n", err)
+		fmt.Printf("service start fails: %v\n", err)
 	}
 }
