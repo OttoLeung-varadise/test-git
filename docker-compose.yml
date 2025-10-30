@@ -1,4 +1,3 @@
-version: '3.8'
 
 # 定义数据卷（持久化 PostgreSQL 数据）
 volumes:
