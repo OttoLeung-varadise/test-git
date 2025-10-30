@@ -72,8 +72,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/handler.BookResponse"
                         }
@@ -164,7 +164,7 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "更新成功",
                         "schema": {
                             "type": "string"
@@ -206,7 +206,7 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "删除成功",
                         "schema": {
                             "type": "string"

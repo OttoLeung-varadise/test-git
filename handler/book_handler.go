@@ -11,15 +11,16 @@ import (
 )
 
 // CreateBookHandler 创建书籍接口
-// @Summary 创建新书籍
-// @Description 新增一本图书到数据库
-// @Accept json
-// @Produce json
-// @Param book body CreateBookRequest true "书籍信息"
-// @Success 200 {object} BookResponse
-// @Failure 400 {string} string "请求参数错误"
-// @Failure 500 {string} string "服务器内部错误"
-// @Router /books [post]
+//
+//	@Summary		创建新书籍
+//	@Description	新增一本图书到数据库
+//	@Accept			json
+//	@Produce		json
+//	@Param			book	body		CreateBookRequest	true	"书籍信息"
+//	@Success		201		{object}	BookResponse
+//	@Failure		400		{string}	string	"请求参数错误"
+//	@Failure		500		{string}	string	"服务器内部错误"
+//	@Router			/books [post]
 func CreateBookHandler(c *gin.Context) {
 	var req CreateBookRequest
 	// 绑定并验证请求体
@@ -47,15 +48,16 @@ func CreateBookHandler(c *gin.Context) {
 }
 
 // GetBookHandler 根据ID查询书籍接口
-// @Summary 查询单本书籍
-// @Description 通过ID查询书籍详情
-// @Produce json
-// @Param id path int true "书籍ID"
-// @Success 200 {object} BookResponse
-// @Failure 400 {string} string "ID格式错误"
-// @Failure 404 {string} string "书籍不存在"
-// @Failure 500 {string} string "服务器内部错误"
-// @Router /books/{id} [get]
+//
+//	@Summary		查询单本书籍
+//	@Description	通过ID查询书籍详情
+//	@Produce		json
+//	@Param			id	path		int	true	"书籍ID"
+//	@Success		200	{object}	BookResponse
+//	@Failure		400	{string}	string	"ID格式错误"
+//	@Failure		404	{string}	string	"书籍不存在"
+//	@Failure		500	{string}	string	"服务器内部错误"
+//	@Router			/books/{id} [get]
 func GetBookHandler(c *gin.Context) {
 	// 从URL路径中获取ID
 	idStr := c.Param("id")
@@ -81,14 +83,15 @@ func GetBookHandler(c *gin.Context) {
 }
 
 // ListBooksHandler 查询书籍列表接口（支持分页）
-// @Summary 查询书籍列表
-// @Description 分页查询所有书籍
-// @Produce json
-// @Param page query int false "页码（默认1）"
-// @Param pageSize query int false "每页条数（默认10）"
-// @Success 200 {object} BookListResponse
-// @Failure 500 {string} string "服务器内部错误"
-// @Router /books [get]
+//
+//	@Summary		查询书籍列表
+//	@Description	分页查询所有书籍
+//	@Produce		json
+//	@Param			page		query		int	false	"页码（默认1）"
+//	@Param			pageSize	query		int	false	"每页条数（默认10）"
+//	@Success		200			{object}	BookListResponse
+//	@Failure		500			{string}	string	"服务器内部错误"
+//	@Router			/books [get]
 func ListBooksHandler(c *gin.Context) {
 	// 获取分页参数（默认第1页，每页10条）
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
@@ -116,17 +119,18 @@ func ListBooksHandler(c *gin.Context) {
 }
 
 // UpdateBookHandler 更新书籍接口
-// @Summary 更新书籍信息
-// @Description 根据ID更新书籍信息
-// @Accept json
-// @Produce json
-// @Param id path int true "书籍ID"
-// @Param book body UpdateBookRequest true "更新的书籍信息"
-// @Success 200 {string} string "更新成功"
-// @Failure 400 {string} string "请求参数错误或ID格式错误"
-// @Failure 404 {string} string "书籍不存在"
-// @Failure 500 {string} string "服务器内部错误"
-// @Router /books/{id} [put]
+//
+//	@Summary		更新书籍信息
+//	@Description	根据ID更新书籍信息
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"书籍ID"
+//	@Param			book	body		UpdateBookRequest	true	"更新的书籍信息"
+//	@Success		204		{string}	string				"更新成功"
+//	@Failure		400		{string}	string				"请求参数错误或ID格式错误"
+//	@Failure		404		{string}	string				"书籍不存在"
+//	@Failure		500		{string}	string				"服务器内部错误"
+//	@Router			/books/{id} [put]
 func UpdateBookHandler(c *gin.Context) {
 	// 解析ID
 	idStr := c.Param("id")
@@ -166,15 +170,16 @@ func UpdateBookHandler(c *gin.Context) {
 }
 
 // DeleteBookHandler 删除书籍接口
-// @Summary 删除书籍
-// @Description 根据ID软删除书籍
-// @Produce json
-// @Param id path int true "书籍ID"
-// @Success 200 {string} string "删除成功"
-// @Failure 400 {string} string "ID格式错误"
-// @Failure 404 {string} string "书籍不存在"
-// @Failure 500 {string} string "服务器内部错误"
-// @Router /books/{id} [delete]
+//
+//	@Summary		删除书籍
+//	@Description	根据ID软删除书籍
+//	@Produce		json
+//	@Param			id	path		int		true	"书籍ID"
+//	@Success		204	{string}	string	"删除成功"
+//	@Failure		400	{string}	string	"ID格式错误"
+//	@Failure		404	{string}	string	"书籍不存在"
+//	@Failure		500	{string}	string	"服务器内部错误"
+//	@Router			/books/{id} [delete]
 func DeleteBookHandler(c *gin.Context) {
 	// 解析ID
 	idStr := c.Param("id")
