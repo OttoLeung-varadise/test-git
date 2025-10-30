@@ -64,14 +64,15 @@ type COCRoleCard struct {
 
 // 基本信息
 type BasicInfo struct {
-	RoleName   string `json:"角色名"`  // 角色名
-	Gender     string `json:"性别"`   // 性别
-	Age        int    `json:"年龄"`   // 年龄
-	Occupation string `json:"职业"`   // 职业
-	Alignment  string `json:"阵营"`   // 阵营
-	Race       string `json:"种族"`   // 种族
-	Appearance string `json:"外貌描述"` // 外貌描述
-	Backstory  string `json:"背景故事"` // 背景故事
+	AvatarURL  string `json:"头像URL,omitempty"` // 头像URL
+	RoleName   string `json:"角色名"`             // 角色名
+	Gender     string `json:"性别"`              // 性别
+	Age        int    `json:"年龄"`              // 年龄
+	Occupation string `json:"职业"`              // 职业
+	Alignment  string `json:"阵营"`              // 阵营
+	Race       string `json:"种族"`              // 种族
+	Appearance string `json:"外貌描述"`            // 外貌描述
+	Backstory  string `json:"背景故事"`            // 背景故事
 }
 
 // 属性值（含派生属性）
@@ -109,7 +110,7 @@ type Skills struct {
 type Skill struct {
 	Name   string `json:"名称"`           // 技能名称
 	Value  int    `json:"数值"`           // 技能数值
-	Remark string `json:"备注,omitempty"` // 备注（可选字段，omitempty表示为空时不序列化）
+	Remark string `json:"备注,omitempty"` // 备注（可选）
 }
 
 // 物品与财富
