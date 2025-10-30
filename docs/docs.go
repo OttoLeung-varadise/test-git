@@ -279,43 +279,43 @@ const docTemplate = `{
         "handler.Attributes": {
             "type": "object",
             "properties": {
-                "体型(SIZ)": {
-                    "description": "体型",
-                    "type": "integer"
-                },
-                "体质(CON)": {
-                    "description": "体质",
-                    "type": "integer"
-                },
-                "力量(STR)": {
-                    "description": "力量",
-                    "type": "integer"
-                },
-                "外貌(APP)": {
+                "(APP)": {
                     "description": "外貌",
                     "type": "integer"
                 },
-                "幸运(LUK)": {
-                    "description": "幸运",
+                "(CON)": {
+                    "description": "体质",
                     "type": "integer"
                 },
-                "意志(POW)": {
-                    "description": "意志",
-                    "type": "integer"
-                },
-                "敏捷(DEX)": {
+                "(DEX)": {
                     "description": "敏捷",
                     "type": "integer"
                 },
-                "教育(EDU)": {
+                "(EDU)": {
                     "description": "教育",
                     "type": "integer"
                 },
-                "智力(INT)": {
+                "(INT)": {
                     "description": "智力",
                     "type": "integer"
                 },
-                "派生属性": {
+                "(LUK)": {
+                    "description": "幸运",
+                    "type": "integer"
+                },
+                "(POW)": {
+                    "description": "意志",
+                    "type": "integer"
+                },
+                "(SIZ)": {
+                    "description": "体型",
+                    "type": "integer"
+                },
+                "(STR)": {
+                    "description": "力量",
+                    "type": "integer"
+                },
+                "derived": {
                     "description": "派生属性",
                     "allOf": [
                         {
@@ -328,36 +328,40 @@ const docTemplate = `{
         "handler.BasicInfo": {
             "type": "object",
             "properties": {
-                "外貌描述": {
-                    "description": "外貌描述",
-                    "type": "string"
-                },
-                "年龄": {
+                "age": {
                     "description": "年龄",
                     "type": "integer"
                 },
-                "性别": {
-                    "description": "性别",
+                "alignment": {
+                    "description": "阵营",
                     "type": "string"
                 },
-                "种族": {
-                    "description": "种族",
+                "appearance": {
+                    "description": "外貌描述",
                     "type": "string"
                 },
-                "职业": {
-                    "description": "职业",
+                "avatar_url": {
+                    "description": "头像URL",
                     "type": "string"
                 },
-                "背景故事": {
+                "backstory": {
                     "description": "背景故事",
                     "type": "string"
                 },
-                "角色名": {
+                "gender": {
+                    "description": "性别",
+                    "type": "string"
+                },
+                "name": {
                     "description": "角色名",
                     "type": "string"
                 },
-                "阵营": {
-                    "description": "阵营",
+                "occupation": {
+                    "description": "职业",
+                    "type": "string"
+                },
+                "race": {
+                    "description": "种族",
                     "type": "string"
                 }
             }
@@ -492,28 +496,28 @@ const docTemplate = `{
         "handler.DerivedAttributes": {
             "type": "object",
             "properties": {
-                "理智值(SAN)": {
-                    "description": "理智值",
-                    "type": "integer"
-                },
-                "生命值(HP)": {
+                "(HP)": {
                     "description": "生命值",
                     "type": "integer"
                 },
-                "移动力(MOV)": {
+                "(MOV)": {
                     "description": "移动力",
                     "type": "integer"
                 },
-                "行动数": {
+                "(MP)": {
+                    "description": "魔法值",
+                    "type": "integer"
+                },
+                "(SAN)": {
+                    "description": "理智值",
+                    "type": "integer"
+                },
+                "actions": {
                     "description": "行动数",
                     "type": "integer"
                 },
-                "负重上限(kg)": {
+                "loadlimit(kg)": {
                     "description": "负重上限(kg)",
-                    "type": "integer"
-                },
-                "魔法值(MP)": {
-                    "description": "魔法值",
                     "type": "integer"
                 }
             }
@@ -521,35 +525,35 @@ const docTemplate = `{
         "handler.Equipment": {
             "type": "object",
             "properties": {
-                "名称": {
-                    "description": "装备名称",
-                    "type": "string"
-                },
-                "备注": {
-                    "description": "备注（可选）",
-                    "type": "string"
-                },
-                "弹药": {
+                "ammo": {
                     "description": "弹药（仅武器有，可选）",
                     "type": "integer"
                 },
-                "数量": {
+                "name": {
+                    "description": "装备名称",
+                    "type": "string"
+                },
+                "quantity": {
                     "description": "数量",
                     "type": "integer"
+                },
+                "remark": {
+                    "description": "备注（可选）",
+                    "type": "string"
                 }
             }
         },
         "handler.Inventory": {
             "type": "object",
             "properties": {
-                "装备": {
+                "equipments": {
                     "description": "装备列表",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/handler.Equipment"
                     }
                 },
-                "财富": {
+                "wealth": {
                     "description": "财富信息",
                     "allOf": [
                         {
@@ -562,20 +566,20 @@ const docTemplate = `{
         "handler.PersonalTraits": {
             "type": "object",
             "properties": {
-                "个性特点": {
-                    "description": "个性特点",
+                "importantItem": {
+                    "description": "重要物品",
                     "type": "string"
                 },
-                "特殊能力": {
-                    "description": "特殊能力",
-                    "type": "string"
-                },
-                "重要之人": {
+                "importantPerson": {
                     "description": "重要之人",
                     "type": "string"
                 },
-                "重要物品": {
-                    "description": "重要物品",
+                "personality": {
+                    "description": "个性特点",
+                    "type": "string"
+                },
+                "specialAbility": {
+                    "description": "特殊能力",
                     "type": "string"
                 }
             }
@@ -583,15 +587,15 @@ const docTemplate = `{
         "handler.Skill": {
             "type": "object",
             "properties": {
-                "名称": {
+                "name": {
                     "description": "技能名称",
                     "type": "string"
                 },
-                "备注": {
-                    "description": "备注（可选字段，omitempty表示为空时不序列化）",
+                "remark": {
+                    "description": "备注（可选）",
                     "type": "string"
                 },
-                "数值": {
+                "value": {
                     "description": "技能数值",
                     "type": "integer"
                 }
@@ -600,22 +604,22 @@ const docTemplate = `{
         "handler.Skills": {
             "type": "object",
             "properties": {
-                "职业技能": {
-                    "description": "职业技能",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/handler.Skill"
-                    }
-                },
-                "通用技能": {
+                "general": {
                     "description": "通用技能",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/handler.Skill"
                     }
                 },
-                "魔法技能": {
+                "magic": {
                     "description": "魔法技能",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.Skill"
+                    }
+                },
+                "occupational": {
+                    "description": "职业技能",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/handler.Skill"
@@ -626,25 +630,25 @@ const docTemplate = `{
         "handler.Status": {
             "type": "object",
             "properties": {
-                "备注": {
-                    "description": "备注",
-                    "type": "string"
-                },
-                "当前理智值": {
-                    "description": "当前理智值",
-                    "type": "integer"
-                },
-                "当前生命值": {
+                "currentHP": {
                     "description": "当前生命值",
                     "type": "integer"
                 },
-                "是否受伤": {
+                "currentSAN": {
+                    "description": "当前理智值",
+                    "type": "integer"
+                },
+                "isInjured": {
                     "description": "是否受伤",
                     "type": "boolean"
                 },
-                "是否疯狂": {
+                "isInsane": {
                     "description": "是否疯狂",
                     "type": "boolean"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
                 }
             }
         },
@@ -672,17 +676,17 @@ const docTemplate = `{
         "handler.Wealth": {
             "type": "object",
             "properties": {
-                "信用评级": {
-                    "description": "信用评级",
-                    "type": "integer"
+                "assets": {
+                    "description": "资产",
+                    "type": "string"
                 },
-                "现金": {
+                "cash": {
                     "description": "现金",
                     "type": "integer"
                 },
-                "资产": {
-                    "description": "资产",
-                    "type": "string"
+                "creditScore": {
+                    "description": "信用评级",
+                    "type": "integer"
                 }
             }
         }
