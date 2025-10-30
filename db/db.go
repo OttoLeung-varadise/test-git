@@ -45,13 +45,13 @@ func Init() error {
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return fmt.Errorf("数据库连接失败: %v, %s", err, dsn)
+		return fmt.Errorf("database connetion fails: %v, %s", err, dsn)
 	}
 
 	// 自动迁移：根据模型创建/更新表结构（生产环境建议手动管理迁移）
 	err = DB.AutoMigrate(&model.Book{})
 	if err != nil {
-		return fmt.Errorf("表结构迁移失败: %v", err)
+		return fmt.Errorf("migrates fails: %v", err)
 	}
 
 	return nil
