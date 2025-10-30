@@ -1,6 +1,6 @@
 package handler
 
-import "test-git/model" // 替换为实际的 model 包路径
+import "test-git/model"
 
 // CreateBookRequest 创建书籍的请求体
 type CreateBookRequest struct {
@@ -34,7 +34,6 @@ type BookListResponse struct {
 	List  []BookResponse `json:"list"`  // 分页数据列表
 }
 
-// 把 model.Book 转换为 BookResponse（格式化时间）
 func toBookResponse(book model.Book) BookResponse {
 	return BookResponse{
 		ID:          book.ID,
@@ -42,7 +41,7 @@ func toBookResponse(book model.Book) BookResponse {
 		Author:      book.Author,
 		Price:       book.Price,
 		Description: book.Description,
-		CreatedAt:   book.CreatedAt.Format("2006-01-02 15:04:05"), // 格式化时间
+		CreatedAt:   book.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:   book.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }

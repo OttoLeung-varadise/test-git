@@ -23,13 +23,12 @@ import (
 //	@Router			/books [post]
 func CreateBookHandler(c *gin.Context) {
 	var req CreateBookRequest
-	// 绑定并验证请求体
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "请求参数错误：" + err.Error()})
 		return
 	}
 
-	// 转换为 model.Book
 	book := &model.Book{
 		Title:       req.Title,
 		Author:      req.Author,
@@ -37,13 +36,11 @@ func CreateBookHandler(c *gin.Context) {
 		Description: req.Description,
 	}
 
-	// 调用 service 创建书籍
 	if err := service.CreateBook(book); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "创建书籍失败：" + err.Error()})
 		return
 	}
 
-	// 返回创建成功的书籍信息
 	c.JSON(http.StatusCreated, toBookResponse(*book))
 }
 
@@ -59,7 +56,7 @@ func CreateBookHandler(c *gin.Context) {
 //	@Failure		500	{string}	string	"服务器内部错误"
 //	@Router			/books/{id} [get]
 func GetBookHandler(c *gin.Context) {
-	// 从URL路径中获取ID
+
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
@@ -67,7 +64,6 @@ func GetBookHandler(c *gin.Context) {
 		return
 	}
 
-	// 调用 service 查询书籍
 	book, err := service.GetBookByID(uint(id))
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -78,7 +74,6 @@ func GetBookHandler(c *gin.Context) {
 		return
 	}
 
-	// 返回查询结果
 	c.JSON(http.StatusOK, toBookResponse(*book))
 }
 
@@ -93,24 +88,20 @@ func GetBookHandler(c *gin.Context) {
 //	@Failure		500			{string}	string	"服务器内部错误"
 //	@Router			/books [get]
 func ListBooksHandler(c *gin.Context) {
-	// 获取分页参数（默认第1页，每页10条）
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 
-	// 调用 service 查询列表
 	books, total, err := service.GetAllBooks(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "查询列表失败：" + err.Error()})
 		return
 	}
 
-	// 转换为响应格式
 	var respList []BookResponse
 	for _, book := range books {
 		respList = append(respList, toBookResponse(book))
 	}
 
-	// 返回结果
 	resp := BookListResponse{
 		Total: int(total),
 		List:  respList,
@@ -132,7 +123,6 @@ func ListBooksHandler(c *gin.Context) {
 //	@Failure		500		{string}	string				"服务器内部错误"
 //	@Router			/books/{id} [put]
 func UpdateBookHandler(c *gin.Context) {
-	// 解析ID
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
@@ -140,14 +130,12 @@ func UpdateBookHandler(c *gin.Context) {
 		return
 	}
 
-	// 绑定请求体
 	var req UpdateBookRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "请求参数错误：" + err.Error()})
 		return
 	}
 
-	// 转换为 model.Book（只更新非空字段）
 	updatedBook := &model.Book{
 		Title:       req.Title,
 		Author:      req.Author,
@@ -155,7 +143,6 @@ func UpdateBookHandler(c *gin.Context) {
 		Description: req.Description,
 	}
 
-	// 调用 service 更新书籍
 	if err := service.UpdateBook(uint(id), updatedBook); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.JSON(http.StatusNotFound, gin.H{"error": "書籍記錄不存在:" + err.Error()})
@@ -181,7 +168,6 @@ func UpdateBookHandler(c *gin.Context) {
 //	@Failure		500	{string}	string	"服务器内部错误"
 //	@Router			/books/{id} [delete]
 func DeleteBookHandler(c *gin.Context) {
-	// 解析ID
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
@@ -189,7 +175,6 @@ func DeleteBookHandler(c *gin.Context) {
 		return
 	}
 
-	// 调用 service 删除书籍
 	if err := service.DeleteBook(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "删除失败：" + err.Error()})
 		return
