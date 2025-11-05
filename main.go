@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"test-git/common"
 	"test-git/db"
-	"test-git/handler"
-
 	_ "test-git/docs"
+	"test-git/handler"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -25,18 +25,15 @@ func main() {
 	// 注册 Swagger 路由（关键：让服务启动后能访问 Swagger 页面）
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	bookGroup := r.Group("/books")
-	{
-		bookGroup.POST("", handler.CreateBookHandler)       // 创建书籍
-		bookGroup.GET("/:id", handler.GetBookHandler)       // 查询单本书籍
-		bookGroup.GET("", handler.ListBooksHandler)         // 查询书籍列表
-		bookGroup.PUT("/:id", handler.UpdateBookHandler)    // 更新书籍
-		bookGroup.DELETE("/:id", handler.DeleteBookHandler) // 删除书籍
-	}
-
+	r.Use(common.HeaderMiddleware())
 	roleGroup := r.Group("/roles")
 	{
-		roleGroup.POST("", handler.PreviewRoleHandler) // 預覽角色
+		roleGroup.GET("", handler.ListRoleHandler)           // 獲取角色列表
+		roleGroup.GET("/:id", handler.GetRoleHandler)        // 查詢角色詳情
+		roleGroup.POST("", handler.PreviewRoleHandler)       // 預覽角色卡
+		roleGroup.POST("/create", handler.CreateRoleHandler) // 創建角色
+		roleGroup.PUT("/:id", handler.UpdateRoleHandler)     // 更新角色
+		roleGroup.DELETE("/:id", handler.DeleteRoleHandler)  // 刪除角色
 	}
 
 	fmt.Println("service started up, listen no port: 8080")

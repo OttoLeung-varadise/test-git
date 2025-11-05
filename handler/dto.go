@@ -1,6 +1,10 @@
 package handler
 
-import "test-git/model"
+import (
+	"encoding/json"
+	"strconv"
+	"test-git/model"
+)
 
 // CreateBookRequest 创建书籍的请求体
 type CreateBookRequest struct {
@@ -34,12 +38,6 @@ type BookListResponse struct {
 	List  []BookResponse `json:"list"`  // 分页数据列表
 }
 
-type RolePreviewResponse struct {
-	Name        string `json:"name"`        // 角色名称
-	Description string `json:"description"` // 角色描述
-	AvatarURL   string `json:"avatar_url"`  // 头像URL
-}
-
 func toBookResponse(book model.Book) BookResponse {
 	return BookResponse{
 		ID:          book.ID,
@@ -50,6 +48,53 @@ func toBookResponse(book model.Book) BookResponse {
 		CreatedAt:   book.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:   book.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
+}
+
+type CreateRoleRequest struct {
+	Name        string      `json:"name" binding:"required"`      // 书名（必填）
+	Description string      `json:"description"`                  // 描述
+	AvatarUrl   string      `json:"avatar_url"`                   // 頭像
+	RoleData    COCRoleCard `json:"role_data" binding:"required"` // 角色数据（JSON字符串）
+}
+
+type RoleListResponse struct {
+	Total int            `json:"total"` // 总条数
+	List  []RoleResponse `json:"list"`  // 分页数据列表
+}
+
+type RolePreviewResponse struct {
+	Name        string `json:"name"`        // 角色名称
+	Description string `json:"description"` // 角色描述
+	AvatarURL   string `json:"avatar_url"`  // 头像URL
+}
+
+type RoleResponse struct {
+	Name        string       `json:"name"`        // 角色名称
+	Description string       `json:"description"` // 角色描述
+	AvatarURL   string       `json:"avatar_url"`  // 头像URL
+	RoleData    *COCRoleCard `json:"role_data"`   // 角色数据（JSON字符串）
+	CreatedAt   string       `json:"created_at"`  // 创建时间
+	UpdatedAt   string       `json:"updated_at"`  // 更新时间
+}
+
+func toRoleResponse(role model.Role, withDetail bool) RoleResponse {
+	resp := RoleResponse{
+		Name:        role.Name,
+		Description: role.AvatarUrl,
+		AvatarURL:   role.AvatarUrl,
+		CreatedAt:   role.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:   role.UpdatedAt.Format("2006-01-02 15:04:05"),
+	}
+
+	if withDetail {
+		json.Unmarshal(role.RoleData, &resp.RoleData)
+	}
+
+	return resp
+}
+
+func getRoleDesc(r *COCRoleCard) string {
+	return strconv.Itoa(r.BasicInfo.Age) + "岁 " + r.BasicInfo.Race + " " + r.BasicInfo.Gender + "，职业是" + r.BasicInfo.Appearance
 }
 
 // COC角色卡主结构体
