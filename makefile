@@ -1,7 +1,7 @@
 # This makefile just run in local, only for development
 DB_HOST=localhost
 DB_PWD ?=123456
-DB_NAME ?=bookstore
+DB_NAME ?=chain-worker
 DB_PORT ?=5432
 DB_USER ?=postgres
 DB_URL ?="postgres://${DB_USER}:${DB_PWD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
