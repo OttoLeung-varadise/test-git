@@ -57,6 +57,13 @@ type CreateRoleRequest struct {
 	RoleData    COCRoleCard `json:"role_data" binding:"required"` // 角色数据（JSON字符串）
 }
 
+type UpdateRoleRequest struct {
+	Name        string      `json:"name"`        // 书名（必填）
+	Description string      `json:"description"` // 描述
+	AvatarUrl   string      `json:"avatar_url"`  // 頭像
+	RoleData    COCRoleCard `json:"role_data"`   // 角色数据（JSON字符串）
+}
+
 type RoleListResponse struct {
 	Total int            `json:"total"` // 总条数
 	List  []RoleResponse `json:"list"`  // 分页数据列表
@@ -80,7 +87,7 @@ type RoleResponse struct {
 func toRoleResponse(role model.Role, withDetail bool) RoleResponse {
 	resp := RoleResponse{
 		Name:        role.Name,
-		Description: role.AvatarUrl,
+		Description: role.Description,
 		AvatarURL:   role.AvatarUrl,
 		CreatedAt:   role.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:   role.UpdatedAt.Format("2006-01-02 15:04:05"),
@@ -94,7 +101,7 @@ func toRoleResponse(role model.Role, withDetail bool) RoleResponse {
 }
 
 func getRoleDesc(r *COCRoleCard) string {
-	return strconv.Itoa(r.BasicInfo.Age) + "岁 " + r.BasicInfo.Race + " " + r.BasicInfo.Gender + "，职业是" + r.BasicInfo.Appearance
+	return strconv.Itoa(r.BasicInfo.Age) + "岁" + r.BasicInfo.Race + r.BasicInfo.Gender + "，职业是" + r.BasicInfo.Occupation
 }
 
 // COC角色卡主结构体
@@ -111,13 +118,13 @@ type COCRoleCard struct {
 type BasicInfo struct {
 	AvatarURL  string `json:"avatar_url,omitempty"` // 头像URL
 	RoleName   string `json:"name"`                 // 角色名
-	Gender     string `json:"gender"`               // 性别
+	Gender     string `json:"gender,omitempty"`     // 性别
 	Age        int    `json:"age"`                  // 年龄
 	Occupation string `json:"occupation"`           // 职业
 	Alignment  string `json:"alignment"`            // 阵营
 	Race       string `json:"race"`                 // 种族
-	Appearance string `json:"appearance"`           // 外貌描述
-	Backstory  string `json:"backstory"`            // 背景故事
+	Appearance string `json:"appearance,omitempty"` // 外貌描述
+	Backstory  string `json:"backstory,omitempty"`  // 背景故事
 }
 
 // 属性值（含派生属性）
@@ -160,8 +167,8 @@ type Skill struct {
 
 // 物品与财富
 type Inventory struct {
-	Equipments []Equipment `json:"equipments"` // 装备列表
-	Wealth     Wealth      `json:"wealth"`     // 财富信息
+	Equipments []Equipment `json:"equipments,omitempty"` // 装备列表
+	Wealth     Wealth      `json:"wealth,omitempty"`     // 财富信息
 }
 
 // 单个装备

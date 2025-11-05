@@ -10,6 +10,7 @@ import (
 	"test-git/service"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // CreateRoleHandler 創建角色接口
@@ -91,8 +92,36 @@ func ListRoleHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// GetRoleHandler 查询角色详情接口
+//
+//	@Summary		查询角色详情
+//	@Description	根据ID查询角色详情
+//	@Produce		json
+//	@Param			id		path		int	true	"角色ID"
+//	@Success		200		{object}	RoleResponse
+//	@Failure		400		{string}	string	"请求参数错误或ID格式错误"
+//	@Failure		404		{string}	string	"角色不存在"
+//	@Failure		500		{string}	string	"服务器内部错误"
+//	@Router			/roles/{id} [get]
 func GetRoleHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "GetRoleHandler not implemented yet"})
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID格式错误"})
+		return
+	}
+
+	role, err := service.GetRoleByID(uint(id), common.GetUserID(c))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "角色不存在"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "查询失败：" + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, toRoleResponse(*role, true))
 }
 
 // CreateRoleHandler 创建角色接口
@@ -115,6 +144,11 @@ func CreateRoleHandler(c *gin.Context) {
 	}
 
 	roleCard := req.RoleData
+
+	if req.AvatarUrl != roleCard.BasicInfo.AvatarURL && req.AvatarUrl != "" {
+		roleCard.BasicInfo.AvatarURL = req.AvatarUrl
+	}
+
 	roleJSON, err := json.Marshal(&roleCard)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "角色卡格式错误：" + err.Error()})
@@ -137,12 +171,92 @@ func CreateRoleHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, toRoleResponse(*role, true))
 }
 
+// UpdateRoleHandler 更新角色接口
+//
+//	@Summary		更新角色信息
+//	@Description	根据ID更新角色信息
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"角色ID"
+//	@Param			role	body		UpdateRoleRequest	true	"更新的角色信息"
+//	@Success		204		{string}	string				"更新成功"
+//	@Failure		400		{string}	string				"请求参数错误或ID格式错误"
+//	@Failure		404		{string}	string				"角色不存在"
+//	@Failure		500		{string}	string				"服务器内部错误"
+//	@Router			/roles/{id} [put]
 func UpdateRoleHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "UpdateRoleHandler not implemented yet"})
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID格式错误"})
+		return
+	}
+
+	var req UpdateRoleRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求参数错误：" + err.Error()})
+		return
+	}
+
+	roleCard := req.RoleData
+
+	if req.AvatarUrl != roleCard.BasicInfo.AvatarURL && req.AvatarUrl != "" {
+		roleCard.BasicInfo.AvatarURL = req.AvatarUrl
+	}
+
+	roleJSON, err := json.Marshal(&roleCard)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "角色卡格式错误：" + err.Error()})
+		return
+	}
+
+	updatedRole := &model.Role{
+		Name:        roleCard.BasicInfo.RoleName,
+		WxUserId:    common.GetUserID(c),
+		Description: getRoleDesc(&roleCard),
+		AvatarUrl:   req.AvatarUrl,
+	}
+	updatedRole.RoleData = roleJSON
+
+	if err := service.UpdateRole(uint(id), updatedRole); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "角色記錄不存在:" + err.Error()})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "更新失败：" + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusNoContent, gin.H{"message": "更新成功"})
 }
 
+// DeleteRoleHandler 删除角色接口
+//
+//	@Summary		删除角色
+//	@Description	根据ID软删除角色
+//	@Produce		json
+//	@Param			id	path		int		true	"角色ID"
+//	@Success		204	{string}	string	"删除成功"
+//	@Failure		400	{string}	string	"ID格式错误"
+//	@Failure		404	{string}	string	"角色不存在"
+//	@Failure		500	{string}	string	"服务器内部错误"
+//	@Router			/roles/{id} [delete]
 func DeleteRoleHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "DeleteRoleHandler not implemented yet"})
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID格式错误"})
+		return
+	}
+
+	err = service.DeleteRole(uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "刪除失敗失败：" + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusNoContent, "")
 }
 
 func decodeFile(input interface{}, fileHeader *multipart.FileHeader) error {
