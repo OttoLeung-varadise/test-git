@@ -234,6 +234,41 @@ const docTemplate = `{
             }
         },
         "/roles": {
+            "get": {
+                "description": "分页查询所有角色",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "查询角色列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码（默认1）",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数（默认10）",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.RoleListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "讀取一個角色excel，返回json",
                 "consumes": [
@@ -261,6 +296,189 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "请求参数错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/create": {
+            "post": {
+                "description": "新增一個角色到数据库",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "创建新角色",
+                "parameters": [
+                    {
+                        "description": "角色信息",
+                        "name": "book",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handler.RoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{id}": {
+            "get": {
+                "description": "根据ID查询角色详情",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "查询角色详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.RoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误或ID格式错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "角色不存在",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "根据ID更新角色信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "更新角色信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新的角色信息",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "更新成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误或ID格式错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "角色不存在",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "根据ID软删除角色",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "删除角色",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "删除成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "ID格式错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "角色不存在",
                         "schema": {
                             "type": "string"
                         }
@@ -493,6 +711,35 @@ const docTemplate = `{
                 }
             }
         },
+        "handler.CreateRoleRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "role_data"
+            ],
+            "properties": {
+                "avatar_url": {
+                    "description": "頭像",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "书名（必填）",
+                    "type": "string"
+                },
+                "role_data": {
+                    "description": "角色数据（JSON字符串）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.COCRoleCard"
+                        }
+                    ]
+                }
+            }
+        },
         "handler.DerivedAttributes": {
             "type": "object",
             "properties": {
@@ -584,6 +831,55 @@ const docTemplate = `{
                 }
             }
         },
+        "handler.RoleListResponse": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "description": "分页数据列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.RoleResponse"
+                    }
+                },
+                "total": {
+                    "description": "总条数",
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.RoleResponse": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "头像URL",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "角色描述",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "角色名称",
+                    "type": "string"
+                },
+                "role_data": {
+                    "description": "角色数据（JSON字符串）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.COCRoleCard"
+                        }
+                    ]
+                },
+                "updated_at": {
+                    "description": "更新时间",
+                    "type": "string"
+                }
+            }
+        },
         "handler.Skill": {
             "type": "object",
             "properties": {
@@ -670,6 +966,31 @@ const docTemplate = `{
                 "title": {
                     "description": "书名（可选，不填则不更新）",
                     "type": "string"
+                }
+            }
+        },
+        "handler.UpdateRoleRequest": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "頭像",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "书名（必填）",
+                    "type": "string"
+                },
+                "role_data": {
+                    "description": "角色数据（JSON字符串）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.COCRoleCard"
+                        }
+                    ]
                 }
             }
         },

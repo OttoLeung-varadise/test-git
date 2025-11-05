@@ -130,7 +130,7 @@ func GetRoleHandler(c *gin.Context) {
 //	@Description	新增一個角色到数据库
 //	@Accept			json
 //	@Produce		json
-//	@Param			book	body		CreateRoleHandler	true	"角色信息"
+//	@Param			book	body		CreateRoleRequest	true	"角色信息"
 //	@Success		201		{object}	RoleResponse
 //	@Failure		400		{string}	string	"请求参数错误"
 //	@Failure		500		{string}	string	"服务器内部错误"

@@ -143,6 +143,25 @@ definitions:
     - author
     - title
     type: object
+  handler.CreateRoleRequest:
+    properties:
+      avatar_url:
+        description: 頭像
+        type: string
+      description:
+        description: 描述
+        type: string
+      name:
+        description: 书名（必填）
+        type: string
+      role_data:
+        allOf:
+        - $ref: '#/definitions/handler.COCRoleCard'
+        description: 角色数据（JSON字符串）
+    required:
+    - name
+    - role_data
+    type: object
   handler.DerivedAttributes:
     properties:
       (HP):
@@ -204,6 +223,39 @@ definitions:
         type: string
       specialAbility:
         description: 特殊能力
+        type: string
+    type: object
+  handler.RoleListResponse:
+    properties:
+      list:
+        description: 分页数据列表
+        items:
+          $ref: '#/definitions/handler.RoleResponse'
+        type: array
+      total:
+        description: 总条数
+        type: integer
+    type: object
+  handler.RoleResponse:
+    properties:
+      avatar_url:
+        description: 头像URL
+        type: string
+      created_at:
+        description: 创建时间
+        type: string
+      description:
+        description: 角色描述
+        type: string
+      name:
+        description: 角色名称
+        type: string
+      role_data:
+        allOf:
+        - $ref: '#/definitions/handler.COCRoleCard'
+        description: 角色数据（JSON字符串）
+      updated_at:
+        description: 更新时间
         type: string
     type: object
   handler.Skill:
@@ -268,6 +320,22 @@ definitions:
       title:
         description: 书名（可选，不填则不更新）
         type: string
+    type: object
+  handler.UpdateRoleRequest:
+    properties:
+      avatar_url:
+        description: 頭像
+        type: string
+      description:
+        description: 描述
+        type: string
+      name:
+        description: 书名（必填）
+        type: string
+      role_data:
+        allOf:
+        - $ref: '#/definitions/handler.COCRoleCard'
+        description: 角色数据（JSON字符串）
     type: object
   handler.Wealth:
     properties:
@@ -429,6 +497,29 @@ paths:
             type: string
       summary: 更新书籍信息
   /roles:
+    get:
+      description: 分页查询所有角色
+      parameters:
+      - description: 页码（默认1）
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数（默认10）
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.RoleListResponse'
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 查询角色列表
     post:
       consumes:
       - multipart/form-data
@@ -446,6 +537,127 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.COCRoleCard'
+        "400":
+          description: 请求参数错误
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 创建新角色
+  /roles/{id}:
+    delete:
+      description: 根据ID软删除角色
+      parameters:
+      - description: 角色ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: 删除成功
+          schema:
+            type: string
+        "400":
+          description: ID格式错误
+          schema:
+            type: string
+        "404":
+          description: 角色不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 删除角色
+    get:
+      description: 根据ID查询角色详情
+      parameters:
+      - description: 角色ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.RoleResponse'
+        "400":
+          description: 请求参数错误或ID格式错误
+          schema:
+            type: string
+        "404":
+          description: 角色不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 查询角色详情
+    put:
+      consumes:
+      - application/json
+      description: 根据ID更新角色信息
+      parameters:
+      - description: 角色ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新的角色信息
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: 更新成功
+          schema:
+            type: string
+        "400":
+          description: 请求参数错误或ID格式错误
+          schema:
+            type: string
+        "404":
+          description: 角色不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 更新角色信息
+  /roles/create:
+    post:
+      consumes:
+      - application/json
+      description: 新增一個角色到数据库
+      parameters:
+      - description: 角色信息
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.RoleResponse'
         "400":
           description: 请求参数错误
           schema:
