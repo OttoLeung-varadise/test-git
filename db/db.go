@@ -3,7 +3,6 @@ package db
 import (
 	"fmt"
 	"os"
-	"test-git/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -49,7 +48,7 @@ func Init() error {
 	}
 
 	// 自动迁移：根据模型创建/更新表结构（生产环境建议手动管理迁移）
-	err = DB.AutoMigrate(&model.Role{})
+	// err = DB.AutoMigrate(&model.Role{})
 	if err != nil {
 		return fmt.Errorf("migrates fails: %v", err)
 	}
