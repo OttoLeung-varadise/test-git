@@ -26,6 +26,8 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Use(common.HeaderMiddleware())
+	r.Use(common.Logger())
+
 	roleGroup := r.Group("/roles")
 	{
 		roleGroup.GET("", handler.ListRoleHandler)           // 獲取角色列表
