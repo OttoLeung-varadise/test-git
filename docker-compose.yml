@@ -56,29 +56,29 @@ services:
     restart: unless-stopped
 
   # 3. Fluent Bit 日志采集服务
-  fluent-bit:
-    image: fluent/fluent-bit
-    container_name: fluent-bit
-    user: root
-    volumes:
-      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
-      - ./parsers.conf:/fluent-bit/etc/parsers.conf:ro
-      - gin-logs:/var/log/gin:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    depends_on:
-      postgres:
-        condition: service_healthy
+  # fluent-bit:
+  #   image: fluent/fluent-bit
+  #   container_name: fluent-bit
+  #   user: root
+  #   volumes:
+  #     - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+  #     - ./parsers.conf:/fluent-bit/etc/parsers.conf:ro
+  #     - gin-logs:/var/log/gin:ro
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
 
-  # 4. Grafana 可视化服务
-  grafana:
-    image: grafana/grafana:10.2.2
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana-data:/var/lib/grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    depends_on:
-      - postgres
+  # # 4. Grafana 可视化服务
+  # grafana:
+  #   image: grafana/grafana:10.2.2
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   depends_on:
+  #     - postgres
