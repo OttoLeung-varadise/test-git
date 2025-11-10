@@ -18,6 +18,7 @@ func main() {
 		return
 	}
 	fmt.Println("database connet succ")
+
 	logDB, logErr := db.InitLogDB()
 	if logErr != nil {
 		fmt.Printf("log database init fails: %v\n", logErr)
