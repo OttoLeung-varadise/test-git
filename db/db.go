@@ -9,9 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB // 全局数据库实例
+var DB *gorm.DB
 
-// 数据库配置结构体
 type DBConfig struct {
 	Host     string
 	Port     string
@@ -20,7 +19,6 @@ type DBConfig struct {
 	Name     string
 }
 
-// 从环境变量加载配置
 func loadDBConfig() DBConfig {
 	return DBConfig{
 		Host:     os.Getenv("DB_HOST"),
@@ -31,28 +29,53 @@ func loadDBConfig() DBConfig {
 	}
 }
 
-// Init 初始化数据库连接
 func Init() error {
 	cfg := loadDBConfig()
-	// PostgreSQL 连接参数（根据实际情况修改）
 	// dsn := "postgres://postgres:123456@127.0.0.1:5432/bookstore"
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name,
 	)
 
-	// 连接数据库
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return fmt.Errorf("database connetion fails: %v, %s", err, dsn)
 	}
 
-	// 自动迁移：根据模型创建/更新表结构（生产环境建议手动管理迁移）
 	err = DB.AutoMigrate(&model.Role{})
 	if err != nil {
 		return fmt.Errorf("migrates fails: %v", err)
 	}
 
 	return nil
+}
+
+func InitLogDB() (*gorm.DB, error) {
+	cfg := loadDBConfig()
+	dsn := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, "request-log",
+	)
+	return initLogDB(dsn)
+}
+
+func initLogDB(dsn string) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic("failed to get underlying sql.DB")
+	}
+
+	sqlDB.SetMaxOpenConns(10)
+	sqlDB.SetMaxIdleConns(5)
+
+	err = model.AutoMigrateRequestLog(db)
+	if err != nil {
+		return nil, fmt.Errorf("migrates fails: %v", err)
+	}
+	return db, nil
 }

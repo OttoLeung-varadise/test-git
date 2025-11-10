@@ -13,12 +13,15 @@ import (
 )
 
 func main() {
-	// 初始化数据库连接 & migration
 	if err := db.Init(); err != nil {
 		fmt.Printf("database init fails: %v\n", err)
 		return
 	}
 	fmt.Println("database connet succ")
+	logDB, logErr := db.InitLogDB()
+	if logErr != nil {
+		fmt.Printf("log database init fails: %v\n", logErr)
+	}
 
 	r := gin.Default()
 
@@ -26,7 +29,13 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Use(common.HeaderMiddleware())
-	r.Use(common.Logger())
+
+	if logErr == nil {
+		// 啟動日志異步寫入協程
+		go common.StartLogWriter(logDB)
+		// 註冊請求日志中間件
+		r.Use(common.RequestLogMiddleware())
+	}
 
 	roleGroup := r.Group("/roles")
 	{
