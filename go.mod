@@ -3,6 +3,7 @@ module test-git
 go 1.25.3
 
 require (
+	github.com/OttoLeung-varadise/logmiddleware v0.0.1
 	github.com/arl/statsviz v0.7.2
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/uuid v1.6.0
@@ -11,7 +12,7 @@ require (
 	github.com/swaggo/swag v1.16.6
 	gorm.io/datatypes v1.2.7
 	gorm.io/driver/postgres v1.6.0
-	gorm.io/gorm v1.31.0
+	gorm.io/gorm v1.31.1
 )
 
 require (

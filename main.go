@@ -7,6 +7,8 @@ import (
 	_ "test-git/docs"
 	"test-git/handler"
 
+	midLogger "github.com/OttoLeung-varadise/logmiddleware/logger"
+	loggerModel "github.com/OttoLeung-varadise/logmiddleware/model"
 	"github.com/arl/statsviz"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -20,12 +22,18 @@ func main() {
 	}
 	fmt.Println("database connet succ")
 
-	logDB, logErr := db.InitLogDB()
+	logDB, logErr := loggerModel.InitLogDB()
 	if logErr != nil {
 		fmt.Printf("log database init fails: %v\n", logErr)
 	}
-
 	r := gin.Default()
+
+	if logErr == nil {
+		// create gorouties, use the logDB connetion.
+		go midLogger.StartLogWriter(logDB)
+		// use logger middleware
+		r.Use(midLogger.RequestLogMiddleware())
+	}
 
 	// 注册 Swagger 路由（关键：让服务启动后能访问 Swagger 页面）
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -42,13 +50,6 @@ func main() {
 	})
 
 	r.Use(common.HeaderMiddleware())
-
-	if logErr == nil {
-		// 啟動日志異步寫入協程
-		go common.StartLogWriter(logDB)
-		// 註冊請求日志中間件
-		r.Use(common.RequestLogMiddleware())
-	}
 
 	roleGroup := r.Group("/roles")
 	{
