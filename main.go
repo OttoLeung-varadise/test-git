@@ -7,6 +7,7 @@ import (
 	_ "test-git/docs"
 	"test-git/handler"
 
+	"github.com/arl/statsviz"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -28,6 +29,17 @@ func main() {
 
 	// 注册 Swagger 路由（关键：让服务启动后能访问 Swagger 页面）
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// 注册Statsviz路由，访问 /debug/statsviz 查看监控面板
+	srv, _ := statsviz.NewServer()
+	ws := srv.Ws()
+	index := srv.Index()
+	r.GET("/debug/statsviz/*filepath", func(context *gin.Context) {
+		if context.Param("filepath") == "/ws" {
+			ws(context.Writer, context.Request)
+			return
+		}
+		index(context.Writer, context.Request)
+	})
 
 	r.Use(common.HeaderMiddleware())
 

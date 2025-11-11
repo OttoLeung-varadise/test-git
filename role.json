@@ -1,0 +1,88 @@
+{
+    "basic_info": {
+        "name": "艾伦·佩吉",
+        "gender": "男",
+        "age": 32,
+        "occupation": "考古学家",
+        "alignment": "中立善良",
+        "race": "人类",
+        "appearance": "身材瘦高，戴圆框眼镜，手指因常年挖掘布满茧子",
+        "backstory": "曾在中东参与古文明发掘，因接触到异常壁画导致理智受损，现隐居于阿卡姆市"
+    },
+    "attributes": {
+        "(STR)": 12,
+        "(CON)": 10,
+        "(SIZ)": 13,
+        "(DEX)": 14,
+        "(APP)": 9,
+        "(INT)": 16,
+        "(POW)": 11,
+        "(EDU)": 15,
+        "(LUK)": 8,
+        "派生属性": {
+            "(HP)": 11,
+            "(SAN)": 55,
+            "(MP)": 11,
+            "(MOV)": 8,
+            "actions": 1,
+            "loadlimit(kg)": 36
+        }
+    },
+    "skills": {
+        "occupational": [
+            {
+                "name": "考古学",
+                "value": 70
+            },
+            {
+                "name": "历史",
+                "value": 60
+            }
+        ],
+        "general": [
+            {
+                "name": "图书馆使用",
+                "value": 65
+            }
+        ],
+        "magic": [
+            {
+                "name": "解读咒文",
+                "value": 15,
+                "remark": "仅能解读部分低级咒文"
+            }
+        ]
+    },
+    "inventory": {
+        "equipments": [
+            {
+                "name": "考古铲",
+                "quantity": 1,
+                "remark": "折叠式，便于携带"
+            },
+            {
+                "name": "左轮手枪",
+                "quantity": 1,
+                "ammo": 6
+            }
+        ],
+        "wealth": {
+            "cash": 350,
+            "assets": "阿卡姆市一间小公寓",
+            "creditScore": 40
+        }
+    },
+    "personal_traits": {
+        "personality": "偏执、观察力敏锐",
+        "importantPerson": "导师伊莱亚斯教授（已失踪）",
+        "importantItem": "青铜徽章",
+        "specialAbility": "对古代符号敏感，检定+10"
+    },
+    "status": {
+        "currentSAN": 48,
+        "currentHP": 11,
+        "isInjured": false,
+        "isInsane": false,
+        "remark": "每周需理智检定"
+    }
+}
