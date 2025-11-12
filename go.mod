@@ -3,7 +3,7 @@ module test-git
 go 1.25.3
 
 require (
-	github.com/OttoLeung-varadise/logmiddleware v0.0.2
+	github.com/OttoLeung-varadise/logmiddleware v0.0.5
 	github.com/arl/statsviz v0.7.2
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/uuid v1.6.0

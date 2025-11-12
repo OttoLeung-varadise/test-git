@@ -31,8 +31,9 @@ func main() {
 	if logErr == nil {
 		// create gorouties, use the logDB connetion.
 		go midLogger.StartLogWriter(logDB)
+		midLogger.SetServiceName("test-git")
 		// use logger middleware
-		r.Use(midLogger.RequestLogMiddleware())
+		r.Use(midLogger.RequestLogMiddleware([]string{"/debug/statsviz/*", "/swagger/*"}))
 	}
 
 	// 注册 Swagger 路由（关键：让服务启动后能访问 Swagger 页面）
